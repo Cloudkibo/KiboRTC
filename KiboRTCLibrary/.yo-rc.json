@@ -6,24 +6,23 @@
         "email": "sojharo@gmail.com"
       },
       "libraryName": {
-        "original": "Kibo Rtc",
+        "original": "kiboRtc",
         "camelized": "kiboRtc",
-        "dasherized": "-kibo-rtc",
-        "slugified": "kibo-rtc",
+        "dasherized": "kibo-rtc",
+        "slugified": "kibortc",
         "parts": [
-          "kibo",
-          "rtc"
+          "kibortc"
         ]
       },
       "includeModuleDirectives": true,
       "includeModuleFilters": true,
       "includeModuleServices": true,
-      "includeAngularModuleResource": false,
+      "includeAngularModuleResource": true,
       "includeAngularModuleCookies": false,
       "includeAngularModuleSanitize": false,
-      "librarySrcDirectory": "src/-kibo-rtc",
-      "libraryUnitTestDirectory": "test/unit/-kibo-rtc",
-      "libraryUnitE2eDirectory": "test/e2e/-kibo-rtc"
+      "librarySrcDirectory": "src/kibo-rtc",
+      "libraryUnitTestDirectory": "test/unit/kibo-rtc",
+      "libraryUnitE2eDirectory": "test/e2e/kibo-rtc"
     }
   }
 }

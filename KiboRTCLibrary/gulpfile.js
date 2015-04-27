@@ -30,10 +30,10 @@ var sourceFiles = [
 gulp.task('build', function() {
   gulp.src(sourceFiles)
     .pipe(plumber())
-    .pipe(concat('-kibo-rtc.js'))
+    .pipe(concat('kibo-rtc.js'))
     .pipe(gulp.dest('./dist/'))
     .pipe(uglify())
-    .pipe(rename('-kibo-rtc.min.js'))
+    .pipe(rename('kibo-rtc.min.js'))
     .pipe(gulp.dest('./dist'))
 });
 

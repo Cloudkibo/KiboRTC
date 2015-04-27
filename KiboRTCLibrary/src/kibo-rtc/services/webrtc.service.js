@@ -37,6 +37,9 @@ angular.module('kiboRtc.services')
         var localVideoStream;               /* It holds local camera stream */
         var localAudioStream;               /* It holds local audio stream */
         var localStreamScreen;              /* It holds local screen sharing stream */
+        
+        var videoShared	= false;			/* Booelean variable to check if local video is shared or not */
+        var audioShared	= false;			/* Booelean variable to check if local audio is shared or not */
 
         var pc;                             /* Peer Connection object */
 
@@ -51,7 +54,10 @@ angular.module('kiboRtc.services')
         var remoteAudio;                    /* It is the HTML5 audio element to hold other peer's audio */
         var remoteVideoScreen;              /* It is the HTML5 video element to hold other peer's screen sharing video */
 
-        var screenShared = false;                   /* This boolean variable indicates if the other party has shared the screen */
+        var screenShared = false;           /* This boolean variable indicates if the other party has shared the screen */
+        
+        var AUDIO = 'audio';				/* Constant defining audio */
+        var VIDEO = 'video';				/* Constant defininf video */
 
         return {
 
@@ -144,6 +150,44 @@ angular.module('kiboRtc.services')
                 });
                 pc.addIceCandidate(candidate);
             },
+            
+            /**
+             * This will toggle the local video on or off. It will automatically notify other client that
+             * video has been turned off or on.
+             * 
+             * @param cb callback function to notify application if task was not successful
+             */            
+            toggleVideo : function(cb){
+				if(videoShared){
+					
+					localVideoStream.stop();
+					pc.removeStream(localVideoStream);
+					pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+					
+                    localVideo.src = null;
+					
+					videoShared = false;
+					
+					cb(null);
+				}
+				else {
+					
+					captureMedia(video_constraints, VIDEO, function(err){
+						if(err) return cb(err);
+						
+						pc.addStream(localVideoStream);
+						pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+					
+						localVideo.src = URL.createObjectURL(localVideoStream);
+						
+						videoShared = true;
+						
+						cb(null);
+						
+					});
+					
+				}
+			},
 
             /**
              * Capture the User Media. Application must call this function to capture camera and mic. This function
@@ -156,30 +200,15 @@ angular.module('kiboRtc.services')
             captureUserMedia: function (streamType, cb) {
                 var constraints;
 
-                if (streamType == 'audio')
+                if (streamType == AUDIO)
                     constraints = audio_constraints;
-                else if (streamType == 'video')
+                else if (streamType == VIDEO)
                     constraints = video_constraints;
                 else
                     return cb('Invalid stream type. Must be "audio" or "video"');
 
-                getUserMedia(constraints,
-                    function (newStream) {
-
-                        if (streamType == 'audio') {
-                            localAudioStream = newStream;
-                        }
-                        else if (streamType == 'video') {
-                            localVideoStream = newStream;
-                            localVideo.src = URL.createObjectURL(newStream);
-                        }
-
-                        cb(null);
-                    },
-                    function (err) {
-                        cb(err);
-                    }
-                );
+                captureMedia(constraints, streamType, cb);
+                
             },
 
             /**
@@ -320,7 +349,21 @@ angular.module('kiboRtc.services')
              */
             getIsStarted: function () {
                 return isStarted;
-            }
+            },
+            
+            /**
+             * Client can check if the local video is being shared or not
+             */
+            isLocalVideoShared : function(){
+				return videoShared;
+			},
+			
+			/**
+             * Client can check if the local audio is being shared or not
+             */
+            isLocalAudioShared : function(){
+				return audioShared;
+			}
         };
 
         /**
@@ -423,6 +466,38 @@ angular.module('kiboRtc.services')
                 remoteVideoStream = null;
             }
         }
+        
+        /**
+         * Helper function to capture user media. This will be used by the service internally. This
+         * should not be exposed to the application.
+         *
+         * @param constraints Audio or Video constraints should be set here
+         * @param type Stream type should be specified here. Possible values are 'audio' and 'video'
+         * @param cb Callback function should be given here
+         */
+        function captureMedia(constraints, type, cb){
+			
+			getUserMedia(constraints,
+                    function (newStream) {
+
+                        if (type == AUDIO) {
+                            localAudioStream = newStream;
+                            audioShared = true;
+                        }
+                        else if (type == VIDEO) {
+                            localVideoStream = newStream;
+                            localVideo.src = URL.createObjectURL(newStream);
+                            videoShared = true;
+                        }
+
+                        cb(null);
+                    },
+                    function (err) {
+                        cb(err);
+                    }
+                );
+			
+		}
 
 
     });

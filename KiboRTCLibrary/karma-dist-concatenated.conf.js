@@ -25,9 +25,9 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'bower/angular/angular.js',
+      'bower/angular-resource/angular-resource.js',
       'bower/angular-mocks/angular-mocks.js',
-      'src/**/*.module.js',
-      'src/**/*.js',
+      'dist/kibo-rtc.js',
       'test/unit/**/*.js'
     ],
 
