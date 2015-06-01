@@ -168,6 +168,8 @@ angular.module('kiboRtc.services')
 					
 					videoShared = false;
 					
+					$rootScope.$broadcast('localVideoRemoved');
+					
 					cb(null);
 				}
 				else {
@@ -181,6 +183,46 @@ angular.module('kiboRtc.services')
 						localVideo.src = URL.createObjectURL(localVideoStream);
 						
 						videoShared = true;
+						
+						$rootScope.$broadcast('localVideoAdded');
+						
+						cb(null);
+						
+					});
+					
+				}
+			},
+			
+			/**
+             * This will toggle the local audio on or off. It will automatically notify other client that
+             * audio has been turned off or on.
+             * 
+             * @param cb callback function to notify application if task was not successful
+             */            
+            toggleAudio : function(cb){
+				if(audioShared){
+					
+					localAudioStream.stop();
+					pc.removeStream(localAudioStream);
+					pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+					
+					audioShared = false;
+					
+					$rootScope.$broadcast('localAudioRemoved');
+					
+					cb(null);
+				}
+				else {
+					
+					captureMedia(audio_constraints, AUDIO, function(err){
+						if(err) return cb(err);
+						
+						pc.addStream(localAudioStream);
+						pc.createOffer(setLocalAndSendMessage, handleCreateOfferError);
+					
+						audioShared = true;
+						
+						$rootScope.$broadcast('localAudioAdded');
 						
 						cb(null);
 						
@@ -281,6 +323,7 @@ angular.module('kiboRtc.services')
              */
             hideScreen: function () {
                 localStreamScreen.stop();
+                localVideoScreen.src = URL.createObjectURL(localVideoStream);
                 pc.removeStream(localStreamScreen);
             },
 
