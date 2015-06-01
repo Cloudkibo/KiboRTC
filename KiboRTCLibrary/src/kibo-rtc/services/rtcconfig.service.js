@@ -14,34 +14,44 @@ angular.module('kiboRtc.services')
  *
  * todo: Add the function addICEServer which should take JSON array or JSON object as input
  */
-    .factory('pc_config', function () {
-        /*
-         return pc_config = {'iceServers': [createIceServer('stun:stun.l.google.com:19302', null, null),
-         createIceServer('stun:stun.anyfirewall.com:3478', null, null),
-         createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
-         createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
-         createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
-         ]};
-         */
+  .factory('pc_config', function () {
 
-        return {
-            'iceServers': [{
-                url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
-                credential: 'cloudkibo'
-            },
-                {url: 'stun:stun.l.google.com:19302', username: null, credential: null},
-                {url: 'stun:stun.anyfirewall.com:3478', username: null, credential: null},
-                {url: 'turn:turn.bistri.com:80?transport=udp', username: 'homeo', credential: 'homeo'},
-                {url: 'turn:turn.bistri.com:80?transport=tcp', username: 'homeo', credential: 'homeo'},
-                {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}
-            ]
-        };
+    var isChrome = !!navigator.webkitGetUserMedia;
 
-        /*
-         {url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
-         credential: 'cloudkibo'}
-         */
-    })
+    return {'iceServers': [
+      createIceServer(isChrome
+        ? 'stun:stun.l.google.com:19302'
+        : 'stun:23.21.150.121', null, null)
+    ]};
+
+    /*
+     return {'iceServers': [createIceServer('turn:cloudkibo@162.243.217.34:3478?transport=udp', 'cloudkibo', 'cloudkibo'),
+       createIceServer('stun:stun.l.google.com:19302', null, null),
+     createIceServer('stun:stun.anyfirewall.com:3478', null, null),
+     createIceServer('turn:turn.bistri.com:80?transport=udp', 'homeo', 'homeo'),
+     createIceServer('turn:turn.bistri.com:80?transport=tcp', 'homeo', 'homeo'),
+     createIceServer('turn:turn.anyfirewall.com:443?transport=tcp', 'webrtc', 'webrtc')
+     ]};*/
+     /*
+
+    return {
+      'iceServers': [{
+        url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
+        credential: 'cloudkibo'
+      },
+        {url: 'stun:stun.l.google.com:19302', username: null, credential: null},
+        {url: 'stun:stun.anyfirewall.com:3478', username: null, credential: null},
+        {url: 'turn:turn.bistri.com:80?transport=udp', username: 'homeo', credential: 'homeo'},
+        {url: 'turn:turn.bistri.com:80?transport=tcp', username: 'homeo', credential: 'homeo'},
+        {url: 'turn:turn.anyfirewall.com:443?transport=tcp', username: 'webrtc', credential: 'webrtc'}
+      ]
+    };
+    */
+    /*
+     {url: 'turn:cloudkibo@162.243.217.34:3478?transport=udp', username: 'cloudkibo',
+     credential: 'cloudkibo'}
+     */
+  })
 
 /**
  * Configurations for Reliable Data Channel Connection
@@ -50,23 +60,23 @@ angular.module('kiboRtc.services')
  *
  * todo: write more documentation from WebRTC official documentation for this
  */
-    .factory('pc_constraints', function () {
-        return {'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true}]};
-    })
+  .factory('pc_constraints', function () {
+    return {'optional': [{'DtlsSrtpKeyAgreement': true}, {'RtpDataChannels': true}]};
+  })
 
 /**
  * Session Description Protocol Constraints
  *
  * NOTE: Applications should not use them directly
  */
-    .factory('sdpConstraints', function () {
-        return {
-            'mandatory': {
-                'OfferToReceiveAudio': true,
-                'OfferToReceiveVideo': true
-            }
-        };
-    })
+  .factory('sdpConstraints', function () {
+    return {
+      'mandatory': {
+        'OfferToReceiveAudio': true,
+        'OfferToReceiveVideo': true
+      }
+    };
+  })
 
 /**
  * Video Constraints for getUserMedia() of WebRTC API
@@ -74,9 +84,9 @@ angular.module('kiboRtc.services')
  * todo: add the function setVideoConstraints
  */
 
-    .factory('video_constraints', function () {
-        return {video: true, audio: false};
-    })
+  .factory('video_constraints', function () {
+    return {video: true, audio: false};
+  })
 
 /**
  * Audio Constraints for getUserMedia() of WebRTC API
@@ -84,6 +94,6 @@ angular.module('kiboRtc.services')
  * todo: add the function setVideoConstraints
  */
 
-    .factory('audio_constraints', function () {
-        return {video: false, audio: true};
-    });
+  .factory('audio_constraints', function () {
+    return {video: false, audio: true};
+  });
