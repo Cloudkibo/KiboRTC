@@ -54,3 +54,7 @@ chrome.runtime.onConnect.addListener(function (port) {
         });
     }
 });
+
+chrome.tabs.executeScript(currentTab.id, { file: 'content.js' }, function() {
+  console.log('Injected content-script.');
+});

@@ -1,7 +1,7 @@
 {
     "name" : "CloudKibo Screen Sharing",
     "author": "CloudKibo",
-    "version" : "1.2",
+    "version" : "1.3",
     "manifest_version" : 2,
     "minimum_chrome_version": "34",
     "description" : "This CloudKibo extension enables screen sharing in CloudKibo. It lets you allow share full screen or particular window.",
@@ -22,5 +22,6 @@
     }],
     "permissions": [
       "desktopCapture"
+      "tabs"
     ]
 }
